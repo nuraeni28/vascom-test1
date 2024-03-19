@@ -73,6 +73,7 @@ class UserController extends BaseController
         }
 
         $data = $request->all();
+        $data['password'] = app('hash')->make($request->password);
         $user->fill($data);
         $user->save();
 

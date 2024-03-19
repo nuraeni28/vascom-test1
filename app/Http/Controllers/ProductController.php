@@ -5,11 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseController
 {
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required',
+            'quantity' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
         $data = $request->all();
         $product = Product::create($data);
 
@@ -27,6 +38,15 @@ class ProductController extends BaseController
 
         if (!$product) {
             return response()->json(['code' => 404, 'message' => 'Product not found', 'data' => $product]);
+        }
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required',
+            'quantity' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
         }
 
         $data = $request->all();
